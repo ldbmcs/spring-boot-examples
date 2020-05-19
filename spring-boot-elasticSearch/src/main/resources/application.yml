@@ -1,0 +1,14 @@
+## port
+server:
+  port: 8080
+
+spring:
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9300
+      cluster-name: es-wyf
+
+#log
+logging:
+  level:
+    com.ldbmcs.kafka: INFO

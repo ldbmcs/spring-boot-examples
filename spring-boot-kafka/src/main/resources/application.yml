@@ -1,0 +1,28 @@
+## port
+server:
+  port: 8080
+
+spring:
+  ## kafka
+  ## producer 配置
+  kafka:
+    bootstrap-servers: 123.206.196.94:9092,123.206.196.94:9093,123.206.196.94:9094
+    producer:
+      batch-size: 16
+      retries: 0
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    ## consumer 配置
+    consumer:
+      auto-commit-interval: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      group-id: applog
+      auto-offset-reset: latest
+
+#log
+logging:
+  level:
+    com.ldbmcs.kafka: INFO
