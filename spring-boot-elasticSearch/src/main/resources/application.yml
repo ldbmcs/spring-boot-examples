@@ -5,8 +5,8 @@ server:
 spring:
   data:
     elasticsearch:
-      cluster-nodes: localhost:9300
-      cluster-name: es-wyf
+      cluster-nodes: 123.206.196.94:9300
+      cluster-name: docker-cluster
 
 #log
 logging:
