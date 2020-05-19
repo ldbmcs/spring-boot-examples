@@ -57,13 +57,14 @@ public class CustomerController {
     //http://localhost:8888/getGoodsList?query=商品&pageNumber=1
     //根据关键字"商品"去查询列表，name或者description包含的都查询
     @GetMapping("getList")
-    public List<Customer> getList(Integer pageNumber, String query) {
+    public List<Customer> getList(Integer pageNumber, String keyword) {
         if (pageNumber == null) {
             pageNumber = 0;
         }
+        QueryBuilder customerQuery = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("address", keyword));
         // 构建分页对象
         Pageable pageable = PageRequest.of(pageNumber, PAGESIZE);
-        Page<Customer> spuDocPage = customerRepository.findAll(pageable);
+        Page<Customer> spuDocPage = customerRepository.search(customerQuery, pageable);
         return spuDocPage.getContent();
     }
 }
