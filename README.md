@@ -1,5 +1,5 @@
 ## 1. 简介
-基于 Spring Boot 2.X 版本的入门教程。
+Spring Boot 2.X 教程、技术栈示例代码，快速简单上手教程。
 ## 2. 目录
 - Spring Boot 快速入门
 - Spring Boot 自动配置原理
