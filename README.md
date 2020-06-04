@@ -10,4 +10,4 @@ spring-boot-examples
 ├── spring-boot-elasticSearch -- Spring Boot 整合 ElasticSearch
 ```
 ## 4. 感谢
-- [SpringBoot-Labs](https://github.com/YunaiV/SpringBoot-Labs)
+- [SpringBoot-Labs](https://github.com/YunaiV/SpringBoot-Labs):一个涵盖六个专栏：Spring Boot 2.X、Spring Cloud、Spring Cloud Alibaba、Dubbo、分布式消息队列、分布式事务的仓库。
