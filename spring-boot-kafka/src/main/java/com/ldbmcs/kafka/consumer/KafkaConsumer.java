@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaConsumer {
 
-    @KafkaListener(topics = {"app_log"})
-    public void receive(String message){
+    @KafkaListener(topics = {"app_log"}, groupId = "applog")
+    public void receive(String message) {
         log.info("app_log--消费消息:" + message);
     }
 
-    @KafkaListener(topics = {"app_log2"})
-    public void receive2(String message){
+    @KafkaListener(topics = {"app_log2"}, groupId = "applog2")
+    public void receive2(String message) {
         log.info("app_log2--消费消息:" + message);
     }
 }
