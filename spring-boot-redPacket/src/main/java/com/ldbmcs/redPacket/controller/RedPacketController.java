@@ -5,8 +5,7 @@ import com.ldbmcs.redPacket.common.uitls.RedisUtil;
 import com.ldbmcs.redPacket.common.web.BaseController;
 import com.ldbmcs.redPacket.common.web.JsonResult;
 import com.ldbmcs.redPacket.service.IRedPacketService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +24,11 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/redPacket")
+@Slf4j
 public class RedPacketController extends BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(RedPacketController.class);
-
-    private static int corePoolSize = Runtime.getRuntime().availableProcessors();
-    //创建线程池  调整队列数 拒绝服务
-    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize + 1, 10l, TimeUnit.SECONDS,
+    private static final int corePoolSize = Runtime.getRuntime().availableProcessors();
+    private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize + 1, 10L, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(1000));
 
     @Autowired
@@ -43,17 +40,16 @@ public class RedPacketController extends BaseController {
     /**
      * 抢红包
      *
-     * @param redPacketId 红包id
      * @return JsonResult
      */
     @PostMapping("/start")
     public JsonResult start(Integer redPacketId) {
-        int skillNum = 100;
-        final CountDownLatch latch = new CountDownLatch(skillNum);//N个抢红包
+        int skillNum = 10;
+        final CountDownLatch latch = new CountDownLatch(skillNum);
         // 初始化红包数据，抢红包拦截
-        redisUtil.cacheValue(redPacketId + "-num", 10);
+        redisUtil.cacheValue(redPacketId + "-num", 5);
         // 初始化剩余人数，拆红包拦截
-        redisUtil.cacheValue(redPacketId + "-restPeople", 10);
+        redisUtil.cacheValue(redPacketId + "-restPeople", 5);
         // 初始化红包金额，单位为分
         redisUtil.cacheValue(redPacketId + "-money", 20000);
         // 模拟100个用户抢10个红包
@@ -62,11 +58,11 @@ public class RedPacketController extends BaseController {
             Runnable task = () -> {
                 long count = redisUtil.decr(redPacketId + "-num", 1);
                 if (count > 0) {
-                    JsonResult result = redPacketService.startSecKill(redPacketId, userId);
-                    Double amount = DoubleUtil.divide(Double.parseDouble(result.getData().toString()), (double) 100);
-                    LOGGER.info("用户{}抢红包成功，金额：{}", userId, amount);
+                    Integer amount = redPacketService.startSecKill(redPacketId, userId);
+                    Double redPacketAmount = DoubleUtil.divide(Double.parseDouble(String.valueOf(amount)), (double) 100);
+                    log.info("用户{}抢红包成功，金额：{}", userId, redPacketAmount);
                 } else {
-                    LOGGER.info("用户{}抢红包失败", userId);
+                    log.info("用户{}抢红包失败", userId);
                 }
                 latch.countDown();
             };
@@ -75,7 +71,7 @@ public class RedPacketController extends BaseController {
         try {
             latch.await();
             Integer restMoney = Integer.parseInt(redisUtil.getValue(redPacketId + "-money").toString());
-            LOGGER.info("剩余金额：{}", restMoney);
+            log.info("剩余金额：{}", restMoney);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
