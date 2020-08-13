@@ -2,8 +2,7 @@ package com.ldbmcs.redPacket.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldbmcs.redPacket.common.uitls.RedisUtil;
-import com.ldbmcs.redPacket.common.uitls.RedissLockUtil;
-import com.ldbmcs.redPacket.common.web.JsonResult;
+import com.ldbmcs.redPacket.common.uitls.RedisLockUtil;
 import com.ldbmcs.redPacket.entity.RedPacket;
 import com.ldbmcs.redPacket.entity.RedPacketRecord;
 import com.ldbmcs.redPacket.mapper.RedPacketMapper;
@@ -37,7 +36,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
         boolean res = false;
         try {
             // 获取锁
-            res = RedissLockUtil.tryLock(redPacketId + "", TimeUnit.SECONDS, 3, 10);
+            res = RedisLockUtil.tryLock(redPacketId + "", TimeUnit.SECONDS, 3, 10);
             if (res) {
                 long restPeople = redisUtil.decr(redPacketId + "-restPeople", 1);
                 //  如果是最后一人
@@ -64,7 +63,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
             e.printStackTrace();
         } finally {
             if (res) {//释放锁
-                RedissLockUtil.unlock(redPacketId + "");
+                RedisLockUtil.unlock(redPacketId + "");
             }
         }
         return money;

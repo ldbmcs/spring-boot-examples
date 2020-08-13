@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * redis分布式锁帮助类
  */
-public class RedissLockUtil {
+public class RedisLockUtil {
     private static RedissonClient redissonClient;
     
     public void setRedissonClient(RedissonClient locker) {

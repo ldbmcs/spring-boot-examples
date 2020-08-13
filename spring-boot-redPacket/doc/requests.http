@@ -1,0 +1,5 @@
+### redPacket
+POST http://127.0.0.1:8081/redPacket/start
+Content-Type: application/x-www-form-urlencoded
+
+redPacketId=3
