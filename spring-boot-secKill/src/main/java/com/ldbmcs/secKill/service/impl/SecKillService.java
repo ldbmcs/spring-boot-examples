@@ -49,6 +49,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         secKillRecordMapper.delete(new QueryWrapper<SecKillRecord>().lambda().eq(SecKillRecord::getSecKillId, secKillId));
         SecKill secKill = baseMapper.selectById(secKillId);
         secKill.setNumber(10);
+        secKill.setVersion(1);
         baseMapper.updateById(secKill);
     }
 
@@ -157,5 +158,22 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
             }
         }
         return JsonResult.ok();
+    }
+
+    @Override
+    public JsonResult start7(Integer secKillId, int userId) {
+        // 查询库存
+        SecKill secKill = secKillMapper.selectById(secKillId);
+        if (secKill.getNumber() == 0) {
+            return JsonResult.error();
+        }
+        // 扣库存
+        int result = secKillMapper.updateNumberByVersion(secKillId, secKill.getVersion());
+        if (result > 0) {
+            // 创建订单
+            secKillRecordService.insert(secKillId, userId);
+            return JsonResult.ok();
+        }
+        return JsonResult.error();
     }
 }

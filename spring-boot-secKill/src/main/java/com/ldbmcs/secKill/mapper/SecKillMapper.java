@@ -12,4 +12,6 @@ public interface SecKillMapper extends BaseMapper<SecKill> {
     Integer getSecKillCountByLock(@Param("secKillId") Integer secKillId);
 
     Integer updateNumberByLock(@Param("secKillId") Integer secKillId);
+
+    Integer updateNumberByVersion(@Param("secKillId") Integer secKillId, @Param("version") Integer version);
 }

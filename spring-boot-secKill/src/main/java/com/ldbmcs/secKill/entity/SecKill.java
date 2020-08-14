@@ -21,5 +21,5 @@ public class SecKill extends BaseEntity implements Serializable {
     private Integer number;
     private Integer startTime;
     private Integer endTime;
-    private String version;
+    private Integer version;
 }
