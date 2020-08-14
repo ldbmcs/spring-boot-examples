@@ -172,4 +172,18 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         }
         return JsonResult.error();
     }
+
+    @Override
+    public synchronized JsonResult start8(Integer secKillId, int userId) {
+        // 查询库存
+        Integer number = getSecKillCount(secKillId);
+        if (number == 0) {
+            return JsonResult.error();
+        }
+        // 扣库存
+        secKillMapper.updateNumber(secKillId);
+        // 创建订单
+        secKillRecordService.insert(secKillId, userId);
+        return JsonResult.ok();
+    }
 }

@@ -231,4 +231,33 @@ public class SecKillController extends BaseController {
         }
         return JsonResult.ok();
     }
+
+    /**
+     * 秒杀八(synchronized)
+     *
+     * @return JsonResult
+     */
+    @PostMapping("/start8")
+    public JsonResult start8(Integer secKillId) {
+        int skillNum = 100;
+        final CountDownLatch latch = new CountDownLatch(skillNum);
+        secKillService.deleteSecKill(secKillId);
+        // 模拟10个用户抢5个红包
+        for (int i = 1; i <= skillNum; i++) {
+            int userId = i;
+            Runnable task = () -> {
+                JsonResult result = secKillService.start8(secKillId, userId);
+                log.info("用户:{}{}", userId, result.get("msg"));
+                latch.countDown();
+            };
+            threadPoolTaskExecutor.execute(task);
+        }
+        try {
+            latch.await();
+            log.info("一共秒杀出{}件商品", secKillService.getSecKillCount(secKillId));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return JsonResult.ok();
+    }
 }

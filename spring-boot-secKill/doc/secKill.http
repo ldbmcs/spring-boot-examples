@@ -39,3 +39,9 @@ POST http://127.0.0.1:8082/secKill/start7
 Content-Type: application/x-www-form-urlencoded
 
 secKillId=1
+
+### start8
+POST http://127.0.0.1:8082/secKill/start8
+Content-Type: application/x-www-form-urlencoded
+
+secKillId=1
