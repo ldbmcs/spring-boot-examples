@@ -8,14 +8,13 @@ import com.ldbmcs.redPacket.common.web.JsonResult;
 import com.ldbmcs.redPacket.service.IRedPacketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 高并发抢红包案例
@@ -28,9 +27,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedPacketController extends BaseController {
 
-    private static final int corePoolSize = Runtime.getRuntime().availableProcessors();
-    private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize + 1, 10L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(1000));
+    @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -46,14 +44,14 @@ public class RedPacketController extends BaseController {
     @PostMapping("/start")
     @ServiceLimit
     public JsonResult start(Integer redPacketId) {
-        int skillNum = 10;
+        int skillNum = 20;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         // 初始化红包数据，抢红包拦截
-        redisUtil.cacheValue(redPacketId + "-num", 5);
+        redisUtil.cacheValue(redPacketId + "-num", "5");
         // 初始化剩余人数，拆红包拦截
-        redisUtil.cacheValue(redPacketId + "-restPeople", 5);
+        redisUtil.cacheValue(redPacketId + "-restPeople", "5");
         // 初始化红包金额，单位为分
-        redisUtil.cacheValue(redPacketId + "-money", 20000);
+        redisUtil.cacheValue(redPacketId + "-money", "20000");
         // 模拟10个用户抢5个红包
         for (int i = 1; i <= skillNum; i++) {
             int userId = i;
@@ -68,7 +66,7 @@ public class RedPacketController extends BaseController {
                 }
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();

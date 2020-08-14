@@ -5,14 +5,13 @@ import com.ldbmcs.secKill.common.web.JsonResult;
 import com.ldbmcs.secKill.service.ISecKillService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 秒杀案例
@@ -25,12 +24,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SecKillController extends BaseController {
 
-    private static final int corePoolSize = Runtime.getRuntime().availableProcessors();
-    private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, corePoolSize + 1, 10L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(1000));
-
     @Autowired
     private ISecKillService secKillService;
+
+    @Resource
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 秒杀一(最low实现，出现超卖)
@@ -49,7 +47,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -78,7 +76,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -107,7 +105,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -136,7 +134,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -165,7 +163,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -194,7 +192,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
@@ -223,7 +221,7 @@ public class SecKillController extends BaseController {
                 log.info("用户:{}{}", userId, result.get("msg"));
                 latch.countDown();
             };
-            executor.execute(task);
+            threadPoolTaskExecutor.execute(task);
         }
         try {
             latch.await();
