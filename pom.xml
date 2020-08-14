@@ -63,22 +63,16 @@
             <artifactId>lombok</artifactId>
             <version>1.18.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-redis</artifactId>
-            <version>1.4.7.RELEASE</version>
-        </dependency>
-        <!-- Redisson 实现分布式锁 -->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>2.11.5</version>
-        </dependency>
         <!-- guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.13.3</version>
         </dependency>
     </dependencies>
 </project>
