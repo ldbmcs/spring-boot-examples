@@ -9,4 +9,12 @@ public interface ISecKillService extends IService<SecKill> {
     Integer getSecKillCount(Integer secKillId);
 
     JsonResult start1(Integer secKillId, int userId);
+
+    JsonResult start2(Integer secKillId, int userId);
+
+    JsonResult start3(Integer secKillId, int userId);
+
+    JsonResult start4(Integer secKillId, int userId);
+
+    JsonResult start5(Integer secKillId, int userId);
 }

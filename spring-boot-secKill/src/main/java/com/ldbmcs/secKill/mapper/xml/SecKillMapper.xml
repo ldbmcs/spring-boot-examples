@@ -5,4 +5,10 @@
     <update id="updateNumber">
         update sec_kill set number = number - 1 where id = #{secKillId}
     </update>
+    <update id="updateNumberByLock">
+        update sec_kill set number = number - 1 where id = #{secKillId} and number > 0
+    </update>
+    <select id="getSecKillCountByLock" resultType="java.lang.Integer">
+        select number from sec_kill where id = #{secKillId} for update
+    </select>
 </mapper>
