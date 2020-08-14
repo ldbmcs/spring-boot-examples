@@ -175,4 +175,33 @@ public class SecKillController extends BaseController {
         }
         return JsonResult.ok();
     }
+
+    /**
+     * 秒杀五(redis分布式锁)
+     *
+     * @return JsonResult
+     */
+    @PostMapping("/start6")
+    public JsonResult start6(Integer secKillId) {
+        int skillNum = 30;
+        final CountDownLatch latch = new CountDownLatch(skillNum);
+        secKillService.deleteSecKill(secKillId);
+        // 模拟10个用户抢5个红包
+        for (int i = 1; i <= skillNum; i++) {
+            int userId = i;
+            Runnable task = () -> {
+                JsonResult result = secKillService.start6(secKillId, userId);
+                log.info("用户:{}{}", userId, result.get("msg"));
+                latch.countDown();
+            };
+            executor.execute(task);
+        }
+        try {
+            latch.await();
+            log.info("一共秒杀出{}件商品", secKillService.getSecKillCount(secKillId));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return JsonResult.ok();
+    }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldbmcs.secKill.common.annotation.ServiceLock;
 import com.ldbmcs.secKill.common.exception.BusinessException;
+import com.ldbmcs.secKill.common.uitls.RedisUtil;
 import com.ldbmcs.secKill.common.web.JsonResult;
 import com.ldbmcs.secKill.entity.SecKill;
 import com.ldbmcs.secKill.entity.SecKillRecord;
@@ -11,10 +12,13 @@ import com.ldbmcs.secKill.mapper.SecKillMapper;
 import com.ldbmcs.secKill.mapper.SecKillRecordMapper;
 import com.ldbmcs.secKill.service.ISecKillRecordService;
 import com.ldbmcs.secKill.service.ISecKillService;
+import com.ldbmcs.secKill.service.RedissonService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,6 +33,12 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
 
     @Resource
     ISecKillRecordService secKillRecordService;
+
+    @Autowired
+    private RedissonService redissonService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     // 互斥锁 参数默认false，不公平锁
     private final Lock lock = new ReentrantLock(true);
@@ -121,5 +131,31 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
             return JsonResult.ok();
         }
         return JsonResult.error();
+    }
+
+    @Override
+    public JsonResult start6(Integer secKillId, int userId) {
+        boolean res = false;
+        try {
+            res = redissonService.tryLock(secKillId + "", TimeUnit.SECONDS, 3, 10);
+            if (res) {
+                // 查询库存
+                Integer number = getSecKillCount(secKillId);
+                if (number == 0) {
+                    return JsonResult.error();
+                }
+                // 扣库存
+                secKillMapper.updateNumber(secKillId);
+                // 创建订单
+                secKillRecordService.insert(secKillId, userId);
+            }
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        } finally {
+            if (res) {
+                redissonService.unlock(secKillId + "");
+            }
+        }
+        return JsonResult.ok();
     }
 }
