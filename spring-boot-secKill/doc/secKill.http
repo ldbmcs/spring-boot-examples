@@ -1,5 +1,29 @@
-### redPacket
+### start1
 POST http://127.0.0.1:8082/secKill/start1
+Content-Type: application/x-www-form-urlencoded
+
+secKillId=1
+
+### start2
+POST http://127.0.0.1:8082/secKill/start2
+Content-Type: application/x-www-form-urlencoded
+
+secKillId=1
+
+### start3
+POST http://127.0.0.1:8082/secKill/start3
+Content-Type: application/x-www-form-urlencoded
+
+secKillId=1
+
+### start4
+POST http://127.0.0.1:8082/secKill/start4
+Content-Type: application/x-www-form-urlencoded
+
+secKillId=1
+
+### start5
+POST http://127.0.0.1:8082/secKill/start5
 Content-Type: application/x-www-form-urlencoded
 
 secKillId=1

@@ -50,7 +50,7 @@ spring:
 
 # Mybatis-plus配置
 mybatis-plus:
-  mapper-locations: classpath:com/ldbmcs/**/*Mapper.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
   typeAliasesPackage: com.ldbmcs.**.entity
   global-config:
     id-type: 0

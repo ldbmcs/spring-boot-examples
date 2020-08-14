@@ -5,4 +5,5 @@ import com.ldbmcs.secKill.entity.SecKillRecord;
 
 public interface ISecKillRecordService extends IService<SecKillRecord> {
 
+    void insert(Integer secKillId, int userId);
 }

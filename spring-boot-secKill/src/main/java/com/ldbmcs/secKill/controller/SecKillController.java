@@ -39,10 +39,9 @@ public class SecKillController extends BaseController {
      */
     @PostMapping("/start1")
     public JsonResult start1(Integer secKillId) {
-        int skillNum = 10;
+        int skillNum = 30;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         secKillService.deleteSecKill(secKillId);
-        // 模拟10个用户抢5个红包
         for (int i = 1; i <= skillNum; i++) {
             int userId = i;
             Runnable task = () -> {
@@ -68,7 +67,7 @@ public class SecKillController extends BaseController {
      */
     @PostMapping("/start2")
     public JsonResult start2(Integer secKillId) {
-        int skillNum = 10;
+        int skillNum = 30;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         secKillService.deleteSecKill(secKillId);
         // 模拟10个用户抢5个红包
@@ -97,7 +96,7 @@ public class SecKillController extends BaseController {
      */
     @PostMapping("/start3")
     public JsonResult start3(Integer secKillId) {
-        int skillNum = 10;
+        int skillNum = 30;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         secKillService.deleteSecKill(secKillId);
         // 模拟10个用户抢5个红包
@@ -126,7 +125,7 @@ public class SecKillController extends BaseController {
      */
     @PostMapping("/start4")
     public JsonResult start4(Integer secKillId) {
-        int skillNum = 10;
+        int skillNum = 30;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         secKillService.deleteSecKill(secKillId);
         // 模拟10个用户抢5个红包
@@ -155,7 +154,7 @@ public class SecKillController extends BaseController {
      */
     @PostMapping("/start5")
     public JsonResult start5(Integer secKillId) {
-        int skillNum = 10;
+        int skillNum = 30;
         final CountDownLatch latch = new CountDownLatch(skillNum);
         secKillService.deleteSecKill(secKillId);
         // 模拟10个用户抢5个红包

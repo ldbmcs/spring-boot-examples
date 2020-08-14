@@ -9,6 +9,7 @@ import com.ldbmcs.secKill.entity.SecKill;
 import com.ldbmcs.secKill.entity.SecKillRecord;
 import com.ldbmcs.secKill.mapper.SecKillMapper;
 import com.ldbmcs.secKill.mapper.SecKillRecordMapper;
+import com.ldbmcs.secKill.service.ISecKillRecordService;
 import com.ldbmcs.secKill.service.ISecKillService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +27,18 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
     @Resource
     SecKillMapper secKillMapper;
 
-    private Lock lock = new ReentrantLock(true);//互斥锁 参数默认false，不公平锁
+    @Resource
+    ISecKillRecordService secKillRecordService;
 
+    // 互斥锁 参数默认false，不公平锁
+    private final Lock lock = new ReentrantLock(true);
 
     @Override
     @Transactional
     public void deleteSecKill(Integer secKillId) {
         secKillRecordMapper.delete(new QueryWrapper<SecKillRecord>().lambda().eq(SecKillRecord::getSecKillId, secKillId));
         SecKill secKill = baseMapper.selectById(secKillId);
-        secKill.setNumber(100);
+        secKill.setNumber(10);
         baseMapper.updateById(secKill);
     }
 
@@ -53,10 +57,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         // 扣库存
         secKillMapper.updateNumber(secKillId);
         // 创建订单
-        SecKillRecord secKillRecord = new SecKillRecord();
-        secKillRecord.setSecKillId(secKillId);
-        secKillRecord.setUserId(userId);
-        secKillRecord.setState(0);
+        secKillRecordService.insert(secKillId, userId);
         return JsonResult.ok();
     }
 
@@ -72,10 +73,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
             // 扣库存
             secKillMapper.updateNumber(secKillId);
             // 创建订单
-            SecKillRecord secKillRecord = new SecKillRecord();
-            secKillRecord.setSecKillId(secKillId);
-            secKillRecord.setUserId(userId);
-            secKillRecord.setState(0);
+            secKillRecordService.insert(secKillId, userId);
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
         } finally {
@@ -95,10 +93,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         // 扣库存
         secKillMapper.updateNumber(secKillId);
         // 创建订单
-        SecKillRecord secKillRecord = new SecKillRecord();
-        secKillRecord.setSecKillId(secKillId);
-        secKillRecord.setUserId(userId);
-        secKillRecord.setState(0);
+        secKillRecordService.insert(secKillId, userId);
         return JsonResult.ok();
     }
 
@@ -112,10 +107,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         // 扣库存
         secKillMapper.updateNumber(secKillId);
         // 创建订单
-        SecKillRecord secKillRecord = new SecKillRecord();
-        secKillRecord.setSecKillId(secKillId);
-        secKillRecord.setUserId(userId);
-        secKillRecord.setState(0);
+        secKillRecordService.insert(secKillId, userId);
         return JsonResult.ok();
     }
 
@@ -125,10 +117,7 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
         Integer result = secKillMapper.updateNumberByLock(secKillId);
         if (result > 0) {
             // 创建订单
-            SecKillRecord secKillRecord = new SecKillRecord();
-            secKillRecord.setSecKillId(secKillId);
-            secKillRecord.setUserId(userId);
-            secKillRecord.setState(0);
+            secKillRecordService.insert(secKillId, userId);
             return JsonResult.ok();
         }
         return JsonResult.error();
