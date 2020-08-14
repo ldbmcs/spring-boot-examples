@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldbmcs.secKill.common.annotation.ServiceLock;
 import com.ldbmcs.secKill.common.exception.BusinessException;
-import com.ldbmcs.secKill.common.uitls.RedisUtil;
 import com.ldbmcs.secKill.common.web.JsonResult;
 import com.ldbmcs.secKill.entity.SecKill;
 import com.ldbmcs.secKill.entity.SecKillRecord;
@@ -36,9 +35,6 @@ public class SecKillService extends ServiceImpl<SecKillMapper, SecKill> implemen
 
     @Autowired
     private RedissonService redissonService;
-
-    @Autowired
-    RedisUtil redisUtil;
 
     // 互斥锁 参数默认false，不公平锁
     private final Lock lock = new ReentrantLock(true);
