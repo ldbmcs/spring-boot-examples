@@ -44,7 +44,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
             if (res) {
                 long restPeople = redisUtil.decr(redPacketId + "-restPeople", 1);
                 //  如果是最后一人
-                if (restPeople == 1) {
+                if (restPeople == 0) {
                     money = Integer.parseInt(redisUtil.getValue(redPacketId + "-money").toString());
                 } else {
                     int restMoney = Integer.parseInt(redisUtil.getValue(redPacketId + "-money").toString());

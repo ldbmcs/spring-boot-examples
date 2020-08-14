@@ -52,12 +52,12 @@ public class RedPacketController extends BaseController {
         redisUtil.cacheValue(redPacketId + "-restPeople", 5);
         // 初始化红包金额，单位为分
         redisUtil.cacheValue(redPacketId + "-money", 20000);
-        // 模拟100个用户抢10个红包
+        // 模拟10个用户抢5个红包
         for (int i = 1; i <= skillNum; i++) {
             int userId = i;
             Runnable task = () -> {
                 long count = redisUtil.decr(redPacketId + "-num", 1);
-                if (count > 0) {
+                if (count >= 0) {
                     Integer amount = redPacketService.startSecKill(redPacketId, userId);
                     Double redPacketAmount = DoubleUtil.divide(Double.parseDouble(String.valueOf(amount)), (double) 100);
                     log.info("用户{}抢红包成功，金额：{}", userId, redPacketAmount);
