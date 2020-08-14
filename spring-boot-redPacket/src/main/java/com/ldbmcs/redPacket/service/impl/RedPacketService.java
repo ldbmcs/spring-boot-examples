@@ -10,6 +10,7 @@ import com.ldbmcs.redPacket.mapper.RedPacketRecordMapper;
 import com.ldbmcs.redPacket.service.IRedPacketService;
 import com.ldbmcs.redPacket.service.RedissonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +59,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
                 record.setRedPacketAmount(money);
                 record.setRedPacketId(redPacketId);
                 record.setUserId(userId);
-                redPacketRecordMapper.insert(record);
+                saveRecord(record);
             } else {
                 // 获取锁失败相当于抢红包失败，红包个数加一
                 redisUtil.incr(redPacketId + "-num", 1);
@@ -71,5 +72,10 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
             }
         }
         return money;
+    }
+
+    @Async
+    void saveRecord(RedPacketRecord record){
+        redPacketRecordMapper.insert(record);
     }
 }

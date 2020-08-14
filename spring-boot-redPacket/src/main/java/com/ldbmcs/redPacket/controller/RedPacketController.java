@@ -1,5 +1,6 @@
 package com.ldbmcs.redPacket.controller;
 
+import com.ldbmcs.redPacket.common.annotation.ServiceLimit;
 import com.ldbmcs.redPacket.common.uitls.DoubleUtil;
 import com.ldbmcs.redPacket.common.uitls.RedisUtil;
 import com.ldbmcs.redPacket.common.web.BaseController;
@@ -43,6 +44,7 @@ public class RedPacketController extends BaseController {
      * @return JsonResult
      */
     @PostMapping("/start")
+    @ServiceLimit
     public JsonResult start(Integer redPacketId) {
         int skillNum = 10;
         final CountDownLatch latch = new CountDownLatch(skillNum);
