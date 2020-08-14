@@ -64,10 +64,6 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: false
 
-redisson:
-  address: redis://ldbmcs-redis.redis.rds.aliyuncs.com
-  password: WjGjER9qQ2WNEa6DfKMgAPoQ
-
 # 日志配置
 logging:
   level:

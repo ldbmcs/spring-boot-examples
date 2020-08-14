@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 红包信息表
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName("red_racket")
+@TableName("red_packet")
 @Data
 public class RedPacket extends BaseEntity implements Serializable {
 

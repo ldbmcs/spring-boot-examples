@@ -8,6 +8,7 @@ import com.ldbmcs.redPacket.entity.RedPacketRecord;
 import com.ldbmcs.redPacket.mapper.RedPacketMapper;
 import com.ldbmcs.redPacket.mapper.RedPacketRecordMapper;
 import com.ldbmcs.redPacket.service.IRedPacketService;
+import com.ldbmcs.redPacket.service.RedissonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private RedissonService redissonService;
 
     @Autowired
     private RedPacketRecordMapper redPacketRecordMapper;
@@ -36,7 +40,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
         boolean res = false;
         try {
             // 获取锁
-            res = RedisLockUtil.tryLock(redPacketId + "", TimeUnit.SECONDS, 3, 10);
+            res = redissonService.tryLock(redPacketId + "", TimeUnit.SECONDS, 3, 10);
             if (res) {
                 long restPeople = redisUtil.decr(redPacketId + "-restPeople", 1);
                 //  如果是最后一人
@@ -63,7 +67,7 @@ public class RedPacketService extends ServiceImpl<RedPacketMapper, RedPacket> im
             e.printStackTrace();
         } finally {
             if (res) {//释放锁
-                RedisLockUtil.unlock(redPacketId + "");
+                redissonService.unlock(redPacketId + "");
             }
         }
         return money;
