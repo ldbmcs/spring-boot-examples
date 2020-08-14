@@ -19,9 +19,9 @@
     <modules>
         <module>spring-boot-kafka</module>
         <module>spring-boot-elasticSearch</module>
-        <!-- 抢红包 -->
+        <!-- 抢红包 8081 -->
         <module>spring-boot-redPacket</module>
-        <!-- 秒杀 -->
+        <!-- 秒杀 8082 -->
         <module>spring-boot-secKill</module>
     </modules>
 
